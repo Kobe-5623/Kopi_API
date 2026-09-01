@@ -1,0 +1,18 @@
+import type { QueryInterface } from 'sequelize';
+import { DataTypes } from 'sequelize';
+import { BRANCH_STATUS } from '../constants/storeBranch.js';
+
+interface MigrationContext { context: QueryInterface }
+
+export async function up({ context }: MigrationContext): Promise<void> {
+  await context.createTable('store_branches', {
+    id: { type: DataTypes.STRING(26), primaryKey: true },
+    address: { type: DataTypes.STRING, allowNull: false },
+    phone_number: { type: DataTypes.STRING, allowNull: false },
+    status: { type: DataTypes.ENUM(...BRANCH_STATUS), allowNull: false, defaultValue: 'closed' },
+  });
+}
+
+export async function down({ context }: MigrationContext): Promise<void> {
+  await context.dropTable('store_branches');
+}

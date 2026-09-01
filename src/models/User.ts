@@ -39,8 +39,8 @@ export function initUser(sequelize: Sequelize): typeof User {
   User.init(
     {
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
-      email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
-      passwordHash: { type: DataTypes.STRING(255), allowNull: false, field: 'password_hash' },
+      email: { type: DataTypes.STRING, allowNull: false, unique: true },
+      passwordHash: { type: DataTypes.STRING, allowNull: false, field: 'password_hash' },
       role: { type: DataTypes.ENUM(...USER_ROLE), allowNull: false, defaultValue: 'customer' },
       status: { type: DataTypes.ENUM(...USER_STATUS), allowNull: false, defaultValue: 'active' },
       createdAt: { type: DataTypes.DATE, allowNull: false, field: 'created_at' },
