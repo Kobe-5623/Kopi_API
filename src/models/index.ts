@@ -4,20 +4,64 @@ import { initCustomer } from './Customer.js';
 import { initStaff } from './Staff.js';
 import { initCustomerAddress } from './CustomerAddress.js';
 import { initStoreBranch } from './StoreBranch.js';
+import { initInventoryItem } from './InventoryItem.js';
+import { initProduct } from './Product.js';
+import { initProductIngredient } from './ProductIngredient.js';
+import { initAddOn } from './AddOn.js';
+import { initCartItem } from './CartItem.js';
+import { initCartItemAddOn } from './CartItemAddOn.js';
+import { initOrder } from './Order.js';
+import { initOrderItem } from './OrderItem.js';
+import { initOrderItemAddOn } from './OrderItemAddOn.js';
 
 export const User = initUser(sequelize);
 export const Customer = initCustomer(sequelize);
 export const Staff = initStaff(sequelize);
 export const CustomerAddress = initCustomerAddress(sequelize);
 export const StoreBranch = initStoreBranch(sequelize);
+export const InventoryItem = initInventoryItem(sequelize);
+export const Product = initProduct(sequelize);
+export const ProductIngredient = initProductIngredient(sequelize);
+export const AddOn = initAddOn(sequelize);
+export const CartItem = initCartItem(sequelize);
+export const CartItemAddOn = initCartItemAddOn(sequelize);
+export const Order = initOrder(sequelize);
+export const OrderItem = initOrderItem(sequelize);
+export const OrderItemAddOn = initOrderItemAddOn(sequelize);
 
 User.hasOne( Customer, { foreignKey: 'userId' } );
 User.hasOne( Staff, { foreignKey: 'userId' } );
 Customer.belongsTo( User, { foreignKey: 'userId' } );
+Customer.hasMany( CartItem, { foreignKey: 'customerId' } )
 Customer.hasMany( CustomerAddress, { foreignKey: 'customerId' } );
-CustomerAddress.belongsTo( Customer, { foreignKey: 'customerId' } )
+Customer.hasMany( Order, { foreignKey: 'customerId' } )
+CustomerAddress.belongsTo( Customer, { foreignKey: 'customerId' } );
 Staff.belongsTo( User, { foreignKey: 'userId' } );
 Staff.belongsTo( StoreBranch, { foreignKey: 'storeBranchId' } );
 StoreBranch.hasMany( Staff, { foreignKey: 'storeBranchId' } );
+CartItem.belongsTo( Customer, { foreignKey: 'customerId' } );
+Order.belongsTo( Customer, { foreignKey: 'customerId' } );
+StoreBranch.hasMany(InventoryItem, { foreignKey: 'storeBranchId' });
+InventoryItem.belongsTo(StoreBranch, { foreignKey: 'storeBranchId' });
+Product.hasMany(ProductIngredient, { foreignKey: 'productId' });
+ProductIngredient.belongsTo(Product, { foreignKey: 'productId' });
+InventoryItem.hasMany(ProductIngredient, { foreignKey: 'ingredientId' });
+ProductIngredient.belongsTo(InventoryItem, { foreignKey: 'ingredientId' });
+Product.hasMany(CartItem, { foreignKey: 'productId' });
+CartItem.belongsTo(Product, { foreignKey: 'productId' });
+CartItem.hasMany(CartItemAddOn, { foreignKey: 'cartItemId' });
+CartItemAddOn.belongsTo(CartItem, { foreignKey: 'cartItemId' });
+AddOn.hasMany(CartItemAddOn, { foreignKey: 'addOnId' });
+CartItemAddOn.belongsTo(AddOn, { foreignKey: 'addOnId' });
+StoreBranch.hasMany(Order, { foreignKey: 'storeBranchId' });
+Order.belongsTo(StoreBranch, { foreignKey: 'storeBranchId' });
+Order.hasMany(OrderItem, { foreignKey: 'orderId' });
+OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
+Product.hasMany(OrderItem, { foreignKey: 'productId' });
+OrderItem.belongsTo(Product, { foreignKey: 'productId' });
+OrderItem.hasMany(OrderItemAddOn, { foreignKey: 'orderItemId' });
+OrderItemAddOn.belongsTo(OrderItem, { foreignKey: 'orderItemId' });
+AddOn.hasMany(OrderItemAddOn, { foreignKey: 'addOnId' });
+OrderItemAddOn.belongsTo(AddOn, { foreignKey: 'addOnId' });
 
 export { sequelize };

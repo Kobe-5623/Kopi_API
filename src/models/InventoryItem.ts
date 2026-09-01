@@ -21,7 +21,7 @@ export function initInventoryItem(sequelize: Sequelize): typeof InventoryItem {
   InventoryItem.init(
     {
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
-      storeBranchId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' }, field: 'branch_id' },
+      storeBranchId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' }, field: 'store_branch_id' },
       name: { type: DataTypes.STRING(100), allowNull: false },
       quantity: { type: DataTypes.DECIMAL(8, 2), allowNull: false },
       unit: { type: DataTypes.ENUM(...UNIT), allowNull: false },
