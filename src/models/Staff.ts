@@ -17,7 +17,7 @@ export function initStaff(sequelize: Sequelize): typeof Staff {
       userId: { type: DataTypes.STRING(26), references: { model: 'users', key: 'id' }, primaryKey: true, field: 'user_id' },
       storeBranchId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' }, field: 'store_branch_id' },
     },
-    { sequelize, tableName: 'staffs', modelName: 'Staff', underscored: true },
+    { sequelize, tableName: 'staff', modelName: 'Staff', underscored: true },
   );
   return Staff;
 }

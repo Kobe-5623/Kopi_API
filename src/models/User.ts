@@ -10,7 +10,6 @@ import { generateID } from '../utils/idGenerator.js';
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;
-  declare fullName: string;
   declare email: string;
   declare passwordHash: string;
   declare role: CreationOptional<UserRole>;
@@ -21,7 +20,6 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   toSafeJSON(): SafeUser {
     return {
       id: this.id,
-      fullName: this.fullName,
       email: this.email,
       role: this.role,
       status: this.status,
@@ -33,7 +31,6 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
 
 export interface SafeUser {
   id: string;
-  fullName: string;
   email: string;
   role: UserRole;
   status: UserStatus;
@@ -45,13 +42,12 @@ export function initUser(sequelize: Sequelize): typeof User {
   User.init(
     {
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
-      fullName: { type: DataTypes.STRING(255), allowNull: false, field: 'full_name' },
       email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
       passwordHash: { type: DataTypes.STRING(255), allowNull: false, field: 'password_hash' },
       role: { type: DataTypes.ENUM(...USER_ROLE), allowNull: false, defaultValue: 'customer' },
       status: { type: DataTypes.ENUM(...USER_STATUS), allowNull: false, defaultValue: 'active' },
-      createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'created_at' },
-      updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'updated_at' },
+      createdAt: { type: DataTypes.DATE, allowNull: false, field: 'created_at' },
+      updatedAt: {type: DataTypes.DATE, allowNull: false, field: 'updated_at'},
     },
     { sequelize, tableName: 'users', modelName: 'User', underscored: true },
   );
