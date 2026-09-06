@@ -7,7 +7,6 @@ interface MigrationContext { context: QueryInterface }
 export async function up({ context }: MigrationContext): Promise<void> {
   await context.createTable('users', {
     id: { type: DataTypes.STRING(26), primaryKey: true },
-    full_name: { type: DataTypes.STRING(255), allowNull: false },
     email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
     password_hash: { type: DataTypes.STRING(255), allowNull: false },
     role: { type: DataTypes.ENUM(...USER_ROLE), allowNull: false, defaultValue: 'customer' },
