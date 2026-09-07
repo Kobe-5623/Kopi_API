@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { SignOptions } from 'jsonwebtoken';
 
 function integer(name: string, fallback: number): number {
   const value = Number(process.env[name] ?? fallback);
@@ -16,8 +17,12 @@ if (nodeEnv === 'production' && jwtSecret.length < 32) {
 export const env = {
   nodeEnv,
   port: integer('PORT', 3000),
-  databaseUrl: process.env.DATABASE_URL ?? './data/development.sqlite',
+  databaseHost: process.env.DB_HOST ?? 'localhost',
+  databasePort: integer('DB_PORT', 3306),
+  databaseUser: process.env.DB_USER ?? 'root',
+  databasePass: process.env.DB_PASS ?? '',
+  databaseName: process.env.DB_NAME ?? 'kopi',
   jwtSecret,
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '1h',
+  jwtExpiresIn: (process.env.JWT_EXPIRES_IN ?? '1h') as NonNullable<SignOptions['expiresIn']>,
   bcryptRounds: integer('BCRYPT_ROUNDS', 12),
 };

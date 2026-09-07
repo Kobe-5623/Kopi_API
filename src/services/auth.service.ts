@@ -1,33 +1,91 @@
 import bcrypt from 'bcryptjs';
-import jwt, { type SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import type { User as UserInstance } from '../models/User.js';
-import { User } from '../models/index.js';
+import { Customer, CustomerAddress, Staff, StoreBranch, User } from '../models/index.js';
 import { ApiError } from '../utils/ApiError.js';
-import type { LoginInput, SignupInput } from '../validators/user.validators.js';
+import type { LoginInput, RegisterCustomerInput, RegisterOwnerInput, RegisterStaffInput } from '../validators/user.validators.js';
+import { UserRole } from '../constants/user.js';
 
 function createToken(user: UserInstance): string {
   return jwt.sign(
-    { sub: String(user.id), email: user.email },
+    { sub: user.id },
     env.jwtSecret,
-    // jsonwebtoken accepts duration strings at runtime; its duration type is intentionally narrower.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    { expiresIn: env.jwtExpiresIn as SignOptions['expiresIn'] },
+    { expiresIn: env.jwtExpiresIn },
   );
 }
 
-export async function signup(input: SignupInput) {
-  const existing = await User.findOne({ where: { email: input.email } });
-  if (existing) throw new ApiError(409, 'Email is already registered', 'EMAIL_EXISTS');
-  const passwordHash = await bcrypt.hash(input.password, env.bcryptRounds);
-  const user = await User.create({ name: input.name, email: input.email, passwordHash, deactivatedAt: null });
+async function registerUser(email: string, password: string, role: UserRole): Promise<UserInstance> {
+  const existing = await User.findOne({ where: { email, role } });
+  if (existing) throw new ApiError(409, 'User is already registered', 'EMAIL_EXISTS');
+  const passwordHash = await bcrypt.hash(password, env.bcryptRounds);
+
+  const user = await User.create({ 
+    email, 
+    passwordHash, 
+    role,
+  });
+
+  return user;
+}
+
+export async function registerCustomer(input: RegisterCustomerInput) {
+  const user = await registerUser(input.email, input.password, 'customer');
+
+  const customer = await Customer.create({
+    userId: user.id,
+    fullName: input.fullName,
+    phoneNumber: input.phoneNumber,
+  });
+
+  if (input.defaultAddress) {
+    await CustomerAddress.create({
+      customerId: customer.userId,
+      address: input.defaultAddress,
+    });
+  }
+  
+  return { user, customer, token: createToken(user) };
+}
+
+export async function registerStaff(input: RegisterStaffInput) {
+  const storeBranch = await StoreBranch.findOne({ where: {address: input.storeBranchAddress} })
+  if (!storeBranch) throw new ApiError(404, 'Invalid Store Branch Address', 'STORE_BRANCH_NOT_FOUND');
+  const user = await registerUser(input.email, input.password, 'staff');
+
+  const staff = await Staff.create({
+    userId: user.id,
+    storeBranchId: storeBranch.id,
+  });
+
+  return { user, staff, token: createToken(user) };
+}
+
+export async function registerOwner(input: RegisterOwnerInput) {
+  const user = await registerUser(input.email, input.password, 'owner');
   return { user, token: createToken(user) };
 }
 
-export async function login(input: LoginInput) {
-  const user = await User.findOne({ where: { email: input.email } });
+export async function login(input: LoginInput, role: UserRole) {
+  const user = await User.findOne({ where: { email: input.email, role: role } });
   const valid = user ? await bcrypt.compare(input.password, user.passwordHash) : false;
   if (!user || !valid) throw new ApiError(401, 'Invalid email or password', 'INVALID_CREDENTIALS');
-  if (!user.isActive) throw new ApiError(403, 'Account has been deactivated', 'ACCOUNT_DEACTIVATED');
-  return { user, token: createToken(user) };
+  if (user.status !== 'active') throw new ApiError(403, 'Account has been deactivated', 'ACCOUNT_DEACTIVATED');
+
+  let account;
+
+  switch (role) {
+    case 'customer':
+      account = await Customer.findOne({ where: { userId: user.id } });
+      if (!account) throw new ApiError(404, 'Customer not found', 'CUSTOMER_NOT_FOUND');
+      break;
+    case 'staff':
+      account = await Staff.findOne({ where: { userId: user.id } });
+      if (!account) throw new ApiError(404, 'Staff not found', 'STAFF_NOT_FOUND');
+      break;
+  }
+
+  if (!account) return { user, token: createToken(user) };
+
+  return { user, account, token: createToken(user) };
 }
