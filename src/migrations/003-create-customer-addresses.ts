@@ -9,6 +9,7 @@ export async function up({ context }: MigrationContext): Promise<void> {
     customer_id: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'customers', key: 'user_id' } },
     address: { type: DataTypes.STRING, allowNull: false },
     created_at: { type: DataTypes.DATE, allowNull: false },
+    updated_at: { type: DataTypes.DATE, allowNull: false },
   });
 }
 

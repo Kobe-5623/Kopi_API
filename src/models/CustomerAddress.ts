@@ -13,6 +13,7 @@ export class CustomerAddress extends Model<InferAttributes<CustomerAddress>, Inf
   declare customerId: string;
   declare address: string;
   declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export function initCustomerAddress(sequelize: Sequelize): typeof CustomerAddress {
@@ -22,6 +23,7 @@ export function initCustomerAddress(sequelize: Sequelize): typeof CustomerAddres
       customerId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'customers', key: 'user_id' }, field: 'customer_id' },
       address: { type: DataTypes.STRING, allowNull: false },
       createdAt: { type: DataTypes.DATE, allowNull: false, field: 'created_at' },
+      updatedAt: { type: DataTypes.DATE, allowNull: false, field: 'updated_at' },
     },
     { sequelize, tableName: 'customer_addresses', modelName: 'CustomerAddress', underscored: true },
   );
