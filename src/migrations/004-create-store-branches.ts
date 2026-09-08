@@ -10,6 +10,8 @@ export async function up({ context }: MigrationContext): Promise<void> {
     address: { type: DataTypes.STRING, allowNull: false },
     phone_number: { type: DataTypes.STRING, allowNull: false },
     status: { type: DataTypes.ENUM(...BRANCH_STATUS), allowNull: false, defaultValue: 'closed' },
+    created_at: { type: DataTypes.DATE, allowNull: false },
+    updated_at: {type: DataTypes.DATE, allowNull: false },
   });
 }
 

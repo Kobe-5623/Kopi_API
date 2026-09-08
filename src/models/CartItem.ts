@@ -19,7 +19,7 @@ export function initCartItem(sequelize: Sequelize): typeof CartItem {
   CartItem.init(
     {
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
-      customerId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'customers', key: 'id' }, field: 'customer_id' },
+      customerId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'customers', key: 'user_id' }, field: 'customer_id' },
       productId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'products', key: 'id' }, field: 'product_id' },
       quantity: { type: DataTypes.INTEGER, allowNull: false },
     },
