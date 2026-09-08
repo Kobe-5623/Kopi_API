@@ -18,8 +18,8 @@ export const authenticate: RequestHandler = asyncHandler(async (request, _respon
     throw new ApiError(401, 'Invalid or expired token', 'INVALID_TOKEN');
   }
 
-  const user = await User.findByPk(Number(payload.sub));
-  if (!user || !user.isActive) throw new ApiError(401, 'Account is unavailable', 'ACCOUNT_UNAVAILABLE');
+  const user = await User.findByPk(payload.sub);
+  if (!user) throw new ApiError(401, 'Account is unavailable', 'ACCOUNT_UNAVAILABLE');
   request.user = user;
   next();
 });

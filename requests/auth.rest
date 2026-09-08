@@ -2,13 +2,15 @@
 
 ### Sign up
 # @name signup
-POST {{baseUrl}}/auth/signup
+POST {{baseUrl}}/auth/customer/register
 Content-Type: application/json
 
 {
-  "name": "Ada Lovelace",
-  "email": "ada@example.com",
-  "password": "Password123"
+  "fullName": "Valenzuela, Anjanette",
+  "email": "anjyyyvalenzuela@gmail.com",
+  "phoneNumber": "+639813283228",
+  "password": "valenzuela03",
+  "confirmPassword": "valenzuela03"
 }
 
 ### Save these values after signup when your REST client does not support variables

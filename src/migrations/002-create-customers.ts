@@ -8,6 +8,7 @@ export async function up({ context }: MigrationContext): Promise<void> {
     user_id: { type: DataTypes.STRING(26), references: { model: 'users', key: 'id' }, primaryKey: true },
     full_name: { type: DataTypes.STRING(255), allowNull: false },
     phone_number: { type: DataTypes.STRING(13), allowNull: false },
+    created_at: { type: DataTypes.DATE, allowNull: false },
     updated_at: { type: DataTypes.DATE, allowNull: false },
   });
 }
