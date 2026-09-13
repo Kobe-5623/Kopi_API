@@ -1,27 +1,57 @@
 import bcrypt from 'bcryptjs';
 import { env } from '../config/env.js';
 import type { User } from '../models/User.js';
-import { User as UserModel } from '../models/index.js';
+import type { Customer } from '../models/Customer.js';
+import { StoreBranch as StoreBranchModel, Staff as StaffModel, Customer as CustomerModel, User as UserModel } from '../models/index.js';
 import { ApiError } from '../utils/ApiError.js';
 import type { UpdateUserInput } from '../validators/user.validators.js';
+import { UserRole } from '../constants/user.js';
+import { Staff } from '../models/Staff.js';
 
-export async function updateUser(user: User, input: UpdateUserInput): Promise<User> {
-  if (input.email && input.email !== user.email) {
-    const existing = await UserModel.findOne({ where: { email: input.email } });
+async function updateUser(requestedUser: User, input: UpdateUserInput, role: UserRole): Promise<User> {
+  if (input.email && input.email !== requestedUser.email) {
+    const existing = await UserModel.findOne({ where: { email: input.email, role } });
     if (existing) throw new ApiError(409, 'Email is already registered', 'EMAIL_EXISTS');
   }
   if (input.password) {
-    const valid = await bcrypt.compare(input.currentPassword ?? '', user.passwordHash);
+    const valid = await bcrypt.compare(input.currentPassword ?? '', requestedUser.passwordHash);
     if (!valid) throw new ApiError(401, 'Current password is incorrect', 'INVALID_CURRENT_PASSWORD');
-    user.passwordHash = await bcrypt.hash(input.password, env.bcryptRounds);
+    requestedUser.passwordHash = await bcrypt.hash(input.password, env.bcryptRounds);
   }
-  if (input.name) user.name = input.name;
-  if (input.email) user.email = input.email;
-  return user.save();
+  if (input.email) requestedUser.email = input.email;
+  return requestedUser.save();
+}
+
+export async function updateCustomer(requestedUser: User, input: UpdateUserInput): Promise<{user: User, customer: Customer}> {
+  const user = await updateUser(requestedUser, input, 'customer');
+  const requestedCustomer = await CustomerModel.findOne({ where: { userId: user.id } });
+  if (!requestedCustomer) throw new ApiError(404, 'Customer doesn\'t exist, the User might not be a Customer', 'CUSTOMER_NOT_FOUND');
+
+  if (input.fullName) requestedCustomer.fullName = input.fullName;
+  if (input.phoneNumber) requestedCustomer.phoneNumber = input.phoneNumber;
+  const customer = await requestedCustomer.save();
+
+  return { user, customer };
+}
+
+export async function updateStaff(requestedUser: User, input: UpdateUserInput): Promise<{user: User, staff: Staff}> {
+  const user = await updateUser(requestedUser, input, 'staff');
+  const requestedStaff = await StaffModel.findOne({ where: { userId: user.id } });
+  if (!requestedStaff) throw new ApiError(404, 'Staff doesn\'t exist, the User might not be a Staff', 'STAFF_NOT_FOUND');
+
+  const storeBranch = await StoreBranchModel.findOne({ where: { address: input.storeBranchAddress } });
+  if (!storeBranch) throw new ApiError(404, 'Store Branch not found, or wrong address', 'STORE_BRANCH_NOT_FOUND');
+
+  if (storeBranch.id) requestedStaff.storeBranchId = storeBranch.id;
+  const staff = await requestedStaff.save();
+
+  return { user, staff };
 }
 
 export async function deactivateUser(user: User): Promise<User> {
-  user.isActive = false;
-  user.deactivatedAt = new Date();
+  // user.isActive = false;
+  // user.deactivatedAt = new Date();
   return user.save();
 }
+
+
