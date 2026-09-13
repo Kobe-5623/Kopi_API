@@ -13,7 +13,7 @@ export class InventoryItem extends Model<InferAttributes<InventoryItem>, InferCr
   declare id: CreationOptional<string>;
   declare storeBranchId: string;
   declare name: string;
-  declare quantity: number;
+  declare quantity: CreationOptional<number>;
   declare unit: Unit;
 }
 
@@ -23,7 +23,7 @@ export function initInventoryItem(sequelize: Sequelize): typeof InventoryItem {
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
       storeBranchId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' }, field: 'store_branch_id' },
       name: { type: DataTypes.STRING(100), allowNull: false },
-      quantity: { type: DataTypes.DECIMAL(8, 2), allowNull: false },
+      quantity: { type: DataTypes.DECIMAL(8, 2), allowNull: false, defaultValue: 0 },
       unit: { type: DataTypes.ENUM(...UNIT), allowNull: false },
     },
     { sequelize, tableName: 'inventory_items', modelName: 'InventoryItem', underscored: true },

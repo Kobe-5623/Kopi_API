@@ -5,10 +5,6 @@ import type { LoginInput, RegisterCustomerInput, RegisterStaffInput, RegisterOwn
 import { USER_ROLE, UserRole } from '../constants/user.js';
 import { ApiError } from '../utils/ApiError.js';
 
-function validateRole(role: UserRole) {
-
-}
-
 export const registerCustomer: RequestHandler = asyncHandler(async (request, response) => {
   const result = await authService.registerCustomer(request.body as RegisterCustomerInput);
   response.status(201).json({ data: { user: result.user.toSafeJSON(), token: result.token } });
@@ -26,10 +22,7 @@ export const registerOwner: RequestHandler = asyncHandler(async (request, respon
 
 export const login: RequestHandler = asyncHandler(async (request, response) => {
   const role = request.params.role as UserRole;
-  if (!USER_ROLE.includes(role as UserRole)) {
-    throw new ApiError(400, 'Invalid role', 'INVALID_ROLE');
-  }
-
+  if (!USER_ROLE.includes(role as UserRole)) throw new ApiError(400, 'Invalid role', 'INVALID_ROLE');
   const result = await authService.login(request.body as LoginInput, role);
   response.json({ data: { user: result.user.toSafeJSON(), token: result.token } });
 });

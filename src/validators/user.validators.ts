@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 const fullName = z.string().trim().min(2).max(255)
-        .regex(/^[A-Za-z]+(?:, [A-Za-z]+|[ '-][A-Za-z]+)*$/, 'Fullname may only contain letters, commas, spaces, hyphens, aposthropes, and periods')
         .regex(/[A-Za-z]/, 'Fullname must contain a letter');
 const email = z.string().trim().email().max(255).transform((value) => value.toLowerCase());
 const phoneNumber = z.string().trim()
@@ -10,15 +9,14 @@ const password = z.string().min(8).max(72)
         .regex(/[A-Za-z]/, 'Password must contain a letter')
         .regex(/\d/, 'Password must contain a number')
         .regex(/^\S+$/, 'Password must not contain spaces');
-const confirmPassword = z.string().min(1);
-const defaultAddress = z.string().trim().min(2).max(255).optional();
-
+const otherPassword = z.string().min(1);
+const address = z.string().trim().min(2).max(255);
 const storeBranchAddress = z.string().trim().min(2).max(255);
 
 
 
 export const registerCustomerSchema = z.object({
-  fullName, email, phoneNumber, password, confirmPassword, defaultAddress
+  fullName, email, phoneNumber, defaultAddress: address.optional(), password, confirmPassword: otherPassword
 })
 .strict()
 .refine(data => data.password === data.confirmPassword, {
@@ -27,7 +25,7 @@ export const registerCustomerSchema = z.object({
 });
 
 export const registerStaffSchema = z.object({
-  email, storeBranchAddress, password, confirmPassword, defaultAddress
+  email, storeBranchAddress, password, confirmPassword: otherPassword
 })
 .strict()
 .refine(data => data.password === data.confirmPassword, {
@@ -36,7 +34,7 @@ export const registerStaffSchema = z.object({
 });
 
 export const registerOwnerSchema = z.object({
-  email, password, confirmPassword, defaultAddress
+  email, password, confirmPassword: otherPassword
 })
 .strict()
 .refine(data => data.password === data.confirmPassword, {
@@ -50,15 +48,15 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 }).strict();
 
-//INAAYOS MO UNG MGA VALIDATOR NG IBAT IBANG ROLES!!!
-
 export const updateUserSchema = z.object({
-  fullName: z.string().trim().min(2).max(100).optional(),
-  email: z.string().trim().email().max(255).transform((value) => value.toLowerCase()).optional(),
+  fullName: fullName.optional(),
+  newAddress: address.optional(),
+  storeBranchAddress: storeBranchAddress.optional(),
+  email: email.optional(),
   phoneNumber: z.string().min(1).optional(),
-  currentPassword: z.string().min(1).optional(),
+  currentPassword: otherPassword.optional(),
   password: password.optional(),
-  confirmPassword: z.string().min(1).optional(),
+  confirmPassword: otherPassword.optional(),
 }).strict().refine((data) => Object.keys(data).some((key) => key !== 'currentPassword' && key !== 'confirmPassword'), {
   message: 'At least one field must be updated',
 }).refine((data) => !data.password || Boolean(data.currentPassword), {

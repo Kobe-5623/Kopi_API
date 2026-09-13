@@ -70,7 +70,7 @@ export async function login(input: LoginInput, role: UserRole) {
   const user = await User.findOne({ where: { email: input.email, role: role } });
   const valid = user ? await bcrypt.compare(input.password, user.passwordHash) : false;
   if (!user || !valid) throw new ApiError(401, 'Invalid email or password', 'INVALID_CREDENTIALS');
-  if (user.status !== 'active') throw new ApiError(403, 'Account has been deactivated', 'ACCOUNT_DEACTIVATED');
+  if (user.status !== 'active') throw new ApiError(403, 'Account has been inactive/suspended', 'ACCOUNT_NOT_ACTIVE');
 
   let account;
 

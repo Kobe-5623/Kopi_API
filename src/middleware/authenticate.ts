@@ -19,7 +19,7 @@ export const authenticate: RequestHandler = asyncHandler(async (request, _respon
   }
 
   const user = await User.findByPk(payload.sub);
-  if (!user) throw new ApiError(401, 'Account is unavailable', 'ACCOUNT_UNAVAILABLE');
+  if (!user || user.status !== 'active') throw new ApiError(401, 'Account is unavailable', 'ACCOUNT_UNAVAILABLE');
   request.user = user;
   next();
 });
