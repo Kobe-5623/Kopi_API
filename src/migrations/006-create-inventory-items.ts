@@ -8,9 +8,12 @@ export async function up({ context }: MigrationContext): Promise<void> {
   await context.createTable('inventory_items', {
     id: { type: DataTypes.STRING(26), primaryKey: true },
     store_branch_id: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' } },
+    name: { type: DataTypes.STRING(100), allowNull: false },
     quantity: { type: DataTypes.DECIMAL(8, 2), allowNull: false, defaultValue: 0 },
     unit: { type: DataTypes.ENUM(...UNIT), allowNull: false },
   });
+  
+  await context.addIndex('inventory_items', ['storeBranchId', 'name'], { unique: true, name: 'unique_inv_items_branch_name' })
 }
 
 export async function down({ context }: MigrationContext): Promise<void> {
