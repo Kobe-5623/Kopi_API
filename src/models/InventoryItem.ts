@@ -26,7 +26,11 @@ export function initInventoryItem(sequelize: Sequelize): typeof InventoryItem {
       quantity: { type: DataTypes.DECIMAL(8, 2), allowNull: false, defaultValue: 0 },
       unit: { type: DataTypes.ENUM(...UNIT), allowNull: false },
     },
-    { sequelize, tableName: 'inventory_items', modelName: 'InventoryItem', underscored: true },
+    { sequelize, tableName: 'inventory_items', modelName: 'InventoryItem', underscored: true,
+      indexes: [
+        { unique: true, fields: ['storeBranchId', 'name'], name: 'unique_inv_items_branch_name' }
+      ]
+    },
   );
   return InventoryItem;
 }
