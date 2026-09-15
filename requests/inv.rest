@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:3000/api/v1
+
+### New Stock
+POST {{baseUrl}}/inventory/customer/register
+Content-Type: application/json
+
+{
+  "fullName": "Valenzuela, Anjanette",
+  "email": "anjyyyvalenzuela@gmail.com",
+  "phoneNumber": "+639813283228",
+  "password": "valenzuela03",
+  "confirmPassword": "valenzuela03"
+}
