@@ -18,7 +18,8 @@
     "test:coverage": "vitest run --coverage",
     "db:migrate": "tsx src/config/run-migrations.ts",
     "db:migrate:undo": "tsx src/config/undo-migration.ts",
-    "db:migrate:prod": "node dist/src/config/run-migrations.js"
+    "db:migrate:prod": "node dist/src/config/run-migrations.js",
+    "db:seed": "tsx src/config/seeder.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

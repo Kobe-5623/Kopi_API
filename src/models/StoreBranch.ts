@@ -11,6 +11,7 @@ import { generateID } from '../utils/idGenerator.js';
 
 export class StoreBranch extends Model<InferAttributes<StoreBranch>, InferCreationAttributes<StoreBranch>> {
   declare id: CreationOptional<string>;
+  declare name: string;
   declare address: string;
   declare phoneNumber: string;
   declare status: CreationOptional<BranchStatus>;
@@ -22,6 +23,7 @@ export function initStoreBranch(sequelize: Sequelize): typeof StoreBranch {
 	StoreBranch.init(
 		{
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
+      name: { type: DataTypes.STRING, allowNull: false },
       address: { type: DataTypes.STRING, allowNull: false },
       phoneNumber: { type: DataTypes.STRING(11), allowNull: false, field: 'phone_number' },
       status: { type: DataTypes.ENUM(...BRANCH_STATUS), allowNull: false, defaultValue: 'closed' },
