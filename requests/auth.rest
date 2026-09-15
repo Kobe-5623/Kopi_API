@@ -19,7 +19,7 @@ Content-Type: application/json
 
 {
   "email": "anjyyyvalenzuela@gmail.com",
-  "storeBranchAddress": "hakdog",
+  "storeBranchAddress": "Address 1",
   "password": "valenzuela03",
   "confirmPassword": "valenzuela03"
 }
@@ -49,7 +49,7 @@ Content-Type: application/json
 }
 
 ### Invalid login example
-POST {{baseUrl}}/auth/customer/login
+POST {{baseUrl}}/auth/owner/login
 Content-Type: application/json
 
 {
@@ -68,6 +68,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMU0xWldQT
   "email": "tuazonkobebennedictdolorito@gmail.com",
   "fullName": "Tuazon, Kobe Bennedict D.",
   "phoneNumber": "+639123456789",
-  "currentPassword": "valenzuela03",
+  "currentPassword": "bikolangs5623",
   "password": "bikolangs5623"
 }

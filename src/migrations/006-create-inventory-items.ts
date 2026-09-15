@@ -11,9 +11,12 @@ export async function up({ context }: MigrationContext): Promise<void> {
     name: { type: DataTypes.STRING(100), allowNull: false },
     quantity: { type: DataTypes.DECIMAL(8, 2), allowNull: false, defaultValue: 0 },
     unit: { type: DataTypes.ENUM(...UNIT), allowNull: false },
+    expires_at: { type: DataTypes.DATE, allowNull: true },
+    created_at: { type: DataTypes.DATE, allowNull: false },
+    updated_at: {type: DataTypes.DATE, allowNull: false },
   });
   
-  await context.addIndex('inventory_items', ['storeBranchId', 'name'], { unique: true, name: 'unique_inv_items_branch_name' })
+  await context.addIndex('inventory_items', ['store_branch_id', 'name'], { unique: true, name: 'unique_inv_items_branch_name' })
 }
 
 export async function down({ context }: MigrationContext): Promise<void> {
