@@ -1,13 +1,14 @@
 import { fileURLToPath } from 'node:url';
+import path from 'node:path'; // Add this import
 import { SequelizeStorage, Umzug } from 'umzug';
-
 import { sequelize } from './database.js';
 
 const extension = import.meta.url.endsWith('.ts') ? 'ts' : 'js';
 
-const seedersGlob = fileURLToPath(
-  new URL(`../seeders/*.${extension}`, import.meta.url)
-);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const seedersDir = path.resolve(__dirname, '../seeders');
+const cleanDir = seedersDir.replace(/\\/g, '/');
+const seedersGlob = cleanDir + '/*.' + extension;
 
 const seeder = new Umzug({
   migrations: { glob: seedersGlob },
