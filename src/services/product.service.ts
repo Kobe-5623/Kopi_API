@@ -37,13 +37,13 @@ export async function updateProduct(id: string, input: updateProductInput, image
   const product = await ProductModel.findByPk(id);
   if (!product) throw new ApiError(404, 'Product not found', 'PRODUCT_NOT_FOUND');
   
-  if (input.name) product.name = input.name;
-  if (input.category) product.category = input.category;
-  if (input.description) product.description = input.description;
-  if (input.price) product.price = input.price;
+  if (input.name !== undefined) product.name = input.name;
+  if (input.category !== undefined) product.category = input.category;
+  if (input.description !== undefined) product.description = input.description;
+  if (input.price !== undefined) product.price = input.price;
   if (input.isHotAvailable !== undefined) product.isHotAvailable = input.isHotAvailable;
   if (input.isIcedAvailable !== undefined) product.isIcedAvailable = input.isIcedAvailable;
-  if (imageUrl) product.imageUrl = imageUrl;
+  if (imageUrl !== undefined) product.imageUrl = imageUrl;
 
   return product.save();
 }

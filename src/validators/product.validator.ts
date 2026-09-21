@@ -3,11 +3,11 @@ import { CATEGORY } from '../constants/product.js';
 
 const name = z.string().trim().min(2).max(50).regex(/[A-Za-z]/, 'Name must contain a letter');
 const category = z.enum(CATEGORY);
-const description = z.string().trim().min(2).max(255).regex(/[A-Za-z]/, 'Name must contain a letter');
+const description = z.string().trim().min(2).max(255).regex(/[A-Za-z]/, 'Description must contain a letter');
 const price = z.coerce.number().finite().nonnegative({ message: 'Price cannot be negative' })
         .refine((value) => Number.isInteger(value * 100), { message: 'Price can only have 2 decimals' });
-const isHotAvailable = z.boolean();
-const isIcedAvailable = z.boolean();
+const isHotAvailable = z.enum(['true', 'false']).transform(value => value === 'true');
+const isIcedAvailable = z.enum(['true', 'false']).transform(value => value === 'true');
 
 export const newProductSchema = z.object({
   name,
@@ -15,7 +15,7 @@ export const newProductSchema = z.object({
   description,
   price,
   isHotAvailable,
-  isIcedAvailable: z.boolean(),
+  isIcedAvailable,
 }).strict();
 
 export const updateProductSchema = z.object({
