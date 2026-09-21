@@ -48,9 +48,9 @@ export async function updateStaff(requestedUser: User, input: UpdateUserInput): 
   return { user, staff };
 }
 
-export async function deactivateUser(user: User): Promise<User> {
-  // user.isActive = false;
-  // user.deactivatedAt = new Date();
+export async function suspendUser(user: User): Promise<User> {
+  if (user.status === 'suspended') throw new ApiError(409, 'User is already suspended.', 'USER_ALREADY_SUSPENDED');
+  user.status = 'suspended';
   return user.save();
 }
 

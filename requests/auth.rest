@@ -10,7 +10,6 @@ Content-Type: application/json
   "email": "anjyyyvalenzuela@gmail.com",
   "phoneNumber": "+639813283228",
   "password": "valenzuela03",
-  "confirmPassword": "valenzuela03"
 }
 
 ### Register Staff
@@ -21,7 +20,6 @@ Content-Type: application/json
   "email": "anjyyyvalenzuela@gmail.com",
   "storeBranchAddress": "Address 1",
   "password": "valenzuela03",
-  "confirmPassword": "valenzuela03"
 }
 
 ### Owner Staff
@@ -31,12 +29,7 @@ Content-Type: application/json
 {
   "email": "anjyyyvalenzuela@gmail.com",
   "password": "valenzuela03",
-  "confirmPassword": "valenzuela03"
 }
-
-### Save these values after signup when your REST client does not support variables
-@token = {{signup.response.body.data.token}}
-@userId = {{signup.response.body.data.user.id}}
 
 ### Log in
 # @name login
