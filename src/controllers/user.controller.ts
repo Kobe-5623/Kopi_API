@@ -18,6 +18,6 @@ export const updateStaff: RequestHandler = asyncHandler(async (request, response
 
 export const deactivate: RequestHandler = asyncHandler(async (request, response) => {
   const user = assertAuth(request.user);
-  await userService.deactivateUser(user);
+  await userService.suspendUser(user);
   response.status(204).send();
 });

@@ -16,31 +16,19 @@ const storeBranchAddress = z.string().trim().min(2).max(255);
 
 
 export const registerCustomerSchema = z.object({
-  fullName, email, phoneNumber, defaultAddress: address.optional(), password, confirmPassword: otherPassword
+  fullName, email, phoneNumber, defaultAddress: address.optional(), password
 })
-.strict()
-.refine(data => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ["confirmPassword"],
-});
+.strict();
 
 export const registerStaffSchema = z.object({
-  email, storeBranchAddress, password, confirmPassword: otherPassword
+  email, storeBranchAddress, password
 })
-.strict()
-.refine(data => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ["confirmPassword"],
-});
+.strict();
 
 export const registerOwnerSchema = z.object({
-  email, password, confirmPassword: otherPassword
+  email, password
 })
-.strict()
-.refine(data => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ["confirmPassword"],
-});
+.strict();
 
 
 export const loginSchema = z.object({
@@ -56,8 +44,7 @@ export const updateUserSchema = z.object({
   phoneNumber: z.string().min(1).optional(),
   currentPassword: otherPassword.optional(),
   password: password.optional(),
-  confirmPassword: otherPassword.optional(),
-}).strict().refine((data) => Object.keys(data).some((key) => key !== 'currentPassword' && key !== 'confirmPassword'), {
+}).strict().refine((data) => Object.keys(data).some((key) => key !== 'currentPassword'), {
   message: 'At least one field must be updated',
 }).refine((data) => !data.password || Boolean(data.currentPassword), {
   message: 'currentPassword is required to change the password',
