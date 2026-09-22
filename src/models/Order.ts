@@ -4,6 +4,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
   Sequelize,
 } from 'sequelize';
 import {
@@ -15,6 +16,8 @@ import {
   OrderStatus,
 } from '../constants/order.js';
 import { generateID } from '../utils/idGenerator.js';
+import { Customer } from './Customer.js';
+import { OrderItem } from './OrderItem.js';
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
   declare id: CreationOptional<string>;
@@ -29,6 +32,8 @@ export class Order extends Model<InferAttributes<Order>, InferCreationAttributes
   declare status: CreationOptional<OrderStatus>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  declare Customer?: NonAttribute<Customer>;
+  declare OrderItems?: NonAttribute<OrderItem[]>;
 }
 
 export function initOrder(sequelize: Sequelize): typeof Order {

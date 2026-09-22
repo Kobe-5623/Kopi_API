@@ -3,13 +3,16 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
   Sequelize,
 } from 'sequelize';
+import { AddOn } from './AddOn.js';
 
 export class OrderItemAddOn extends Model<InferAttributes<OrderItemAddOn>, InferCreationAttributes<OrderItemAddOn>> {
   declare orderItemId: string;
   declare addOnId: string;
   declare unitPrice: number;
+  declare AddOn?: NonAttribute<AddOn>;
 }
 
 export function initOrderItemAddOn(sequelize: Sequelize): typeof OrderItemAddOn {

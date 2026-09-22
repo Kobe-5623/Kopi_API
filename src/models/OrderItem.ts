@@ -4,9 +4,12 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
   Sequelize,
 } from 'sequelize'; 
 import { generateID } from '../utils/idGenerator.js';
+import { Product } from './Product.js';
+import { OrderItemAddOn } from './OrderItemAddOn.js';
 
 export class OrderItem extends Model<InferAttributes<OrderItem>, InferCreationAttributes<OrderItem>> {
   declare id: CreationOptional<string>;
@@ -14,6 +17,8 @@ export class OrderItem extends Model<InferAttributes<OrderItem>, InferCreationAt
   declare productId: string;
   declare quantity: number;
   declare unitPrice: number;
+  declare Product?: NonAttribute<Product>;
+  declare OrderItemAddOns?: NonAttribute<OrderItemAddOn[]>;
 }
 
 export function initOrderItem(sequelize: Sequelize): typeof OrderItem {
