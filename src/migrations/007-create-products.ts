@@ -5,7 +5,7 @@ interface MigrationContext { context: QueryInterface }
 
 export async function up({ context }: MigrationContext): Promise<void> {
   await context.createTable('products', {
-    id: { type: DataTypes.STRING(26), primaryKey: true },
+    id: { type: DataTypes.STRING(26), primaryKey: true, onDelete: 'CASCADE' },
     name: { type: DataTypes.STRING(100), allowNull: false },
     category: { type: DataTypes.ENUM('coffee', 'non_coffee', 'pastry', 'pasta'), allowNull: false },
     description: { type: DataTypes.STRING, allowNull: false },

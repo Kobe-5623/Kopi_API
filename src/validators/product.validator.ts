@@ -8,6 +8,9 @@ const price = z.coerce.number().finite().nonnegative({ message: 'Price cannot be
         .refine((value) => Number.isInteger(value * 100), { message: 'Price can only have 2 decimals' });
 const isHotAvailable = z.enum(['true', 'false']).transform(value => value === 'true');
 const isIcedAvailable = z.enum(['true', 'false']).transform(value => value === 'true');
+const ingredients = z.array(
+  z.object({id: z.string().trim(), quantity: z.number().positive()}));
+// formData.append('sizes', JSON.stringify(['small', 'medium', 'large']));
 
 export const newProductSchema = z.object({
   name,
@@ -16,6 +19,7 @@ export const newProductSchema = z.object({
   price,
   isHotAvailable,
   isIcedAvailable,
+  ingredients,
 }).strict();
 
 export const updateProductSchema = z.object({
@@ -28,5 +32,11 @@ export const updateProductSchema = z.object({
 }).strict()
 .refine(data => Object.keys(data).length > 0, { message: 'At least one field must be updated' });
 
+export const addProductIngredientSchema = z.object({
+  ingredientId: z.string().trim().min(1),
+  quantityRequired: z.coerce.number().int('Quantity must be a whole number').positive(),
+})
+
 export type newProductInput = z.infer<typeof newProductSchema>;
 export type updateProductInput = z.infer<typeof updateProductSchema>;
+export type addProductIngredientInput = z.infer<typeof addProductIngredientSchema>;

@@ -3,7 +3,8 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import * as productService from '../services/product.service.js'
 import { Category } from '../constants/product.js';
-import { newProductInput, updateProductInput } from '../validators/product.validator.js';
+import { addProductIngredientInput, newProductInput, updateProductInput } from '../validators/product.validator.js';
+import { addAddOnIngredientInput } from '../validators/addon.validator.js';
 
 export const getAllProducts: RequestHandler = asyncHandler( async (request, response) => {
   const products = await productService.getProducts(request.query.category as Category | undefined);
@@ -36,3 +37,21 @@ export const updateProduct: RequestHandler = asyncHandler( async (request, respo
   response.json({ data: { product } });
 })
 
+export const getProductIngredients: RequestHandler = asyncHandler( async (request, response) => {
+  if (typeof request.params.id !== 'string') throw new ApiError(400, 'Invalid product id', 'INVALID_PRODUCT_ID');
+  const productIngredients = await productService.getProductIngredients(request.params.id);
+  response.json({ data: { productIngredients } });
+})
+
+export const addProductIngredient: RequestHandler = asyncHandler( async (request, response) => {
+  if (typeof request.params.id !== 'string') throw new ApiError(400, 'Invalid product id', 'INVALID_PRODUCT_ID');
+  const productIngredient = await productService.addProductIngredient(request.params.id, request.body as addProductIngredientInput);
+  response.json({ data: { productIngredient } });
+})
+
+export const removeProductIngredient: RequestHandler = asyncHandler( async (request, response) => {
+  if (typeof request.params.id !== 'string') throw new ApiError(400, 'Invalid product id', 'INVALID_PRODUCT_ID');
+  if (typeof request.params.ingredientId !== 'string') throw new ApiError(400, 'Invalid ingredient id', 'INVALID_INGREDIENT_ID');
+  await productService.removeProductIngredient(request.params.id, request.params.ingredientId);
+  response.status(204).send();
+})

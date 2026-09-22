@@ -8,8 +8,7 @@ export const validateBody = (schema: ZodType): RequestHandler => (request, _resp
     next(new ApiError(400, 'Validation failed', 'VALIDATION_ERROR', result.error.flatten()));
     return;
   }
-  // Express deliberately types request.body as any; validation makes this assignment safe.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  
   request.body = result.data;
   next();
 };

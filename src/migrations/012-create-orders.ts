@@ -6,7 +6,7 @@ interface MigrationContext { context: QueryInterface }
 
 export async function up({ context }: MigrationContext): Promise<void> {
   await context.createTable('orders', {
-    id: { type: DataTypes.STRING(26), primaryKey: true },
+    id: { type: DataTypes.STRING(26), primaryKey: true, onDelete: 'CASCADE' },
     customer_id: { type: DataTypes.STRING(26), allowNull: true, references: { model: 'customers', key: 'user_id' } },
     customer_address: { type: DataTypes.STRING, allowNull: true },
     store_branch_id: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' } },
