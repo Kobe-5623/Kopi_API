@@ -30,11 +30,10 @@ export async function addToCart(userId: string, input: addToCartInput) { return 
   return cartItem;
 })}
 
-export async function removeCartItem(userId:string, id: string) { return sequelize.transaction(async (transaction) => {
-  const deleted = await CartItemModel.destroy({ where: { id, customerId: userId }, transaction });
+export async function removeCartItem(userId:string, id: string) {
+  const deleted = await CartItemModel.destroy({ where: { id, customerId: userId } });
   if (deleted === 0) throw new ApiError(404, 'Cart item not found', 'CART_ITEM_NOT_FOUND');
-  await CartItemAddOnModel.destroy({ where: { cartItemId: id }, transaction });
-})}
+}
 
 export async function removeCart(userId: string) {
   const deleted = await CartItemModel.destroy({ where: { customerId: userId } });

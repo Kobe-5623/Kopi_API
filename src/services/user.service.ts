@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { env } from '../config/env.js';
 import type { User } from '../models/User.js';
 import type { Customer } from '../models/Customer.js';
-import { StoreBranch as StoreBranchModel, Staff as StaffModel, Customer as CustomerModel, User as UserModel } from '../models/index.js';
+import { StoreBranch as StoreBranchModel, Staff as StaffModel, Customer as CustomerModel, User as UserModel, CustomerAddress as CustomerAddressModel} from '../models/index.js';
 import { ApiError } from '../utils/ApiError.js';
 import type { UpdateUserInput } from '../validators/user.validators.js';
 import { UserRole } from '../constants/user.js';
@@ -55,3 +55,6 @@ export async function suspendUser(user: User): Promise<User> {
 }
 
 
+export async function addCustomerAddress(newAddress: string) {
+  const address = await CustomerAddressModel
+}

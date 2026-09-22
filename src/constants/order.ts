@@ -1,7 +1,6 @@
 export const FULFILLMENT_TYPE = [
     'delivery',
     'self_pick_up',
-    'walk_in',
 ] as const;
 export type FulfillmentType = typeof FULFILLMENT_TYPE[number];
 

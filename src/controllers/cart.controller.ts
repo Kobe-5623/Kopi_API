@@ -8,17 +8,24 @@ import { addToCartInput } from "../validators/cart.validator.js";
 export const getCart: RequestHandler = asyncHandler( async (request, response) => {
   const user = assertAuth(request.user);
   const cart = await cartService.getCart(user.id);
-  response.json({ data: { cart } });
+  response.status(200).json({ data: { cart } });
 });
 
 export const addToCart: RequestHandler = asyncHandler( async (request, response) => {
   const user = assertAuth(request.user);
   const cartItem = await cartService.addToCart(user.id, request.body as addToCartInput);
-  response.json({ data: { cartItem } });
+  response.status(201).json({ data: { cartItem } });
 });
 
-export const removeAddOn: RequestHandler = asyncHandler( async (request, response) => {
+export const removeCartItem: RequestHandler = asyncHandler( async (request, response) => {
   if (typeof request.params.id !== "string") throw new ApiError( 400, "Invalid cart id", "INVALID_CART_ID" );
-  await cartService.removeCart(request.params.id);
+  const user = assertAuth(request.user);
+  await cartService.removeCartItem(user.id, request.params.id);
+  response.status(204).send();
+});
+
+export const removeCart: RequestHandler = asyncHandler( async (request, response) => {
+  const user = assertAuth(request.user);
+  await cartService.removeCart(user.id);
   response.status(204).send();
 });
