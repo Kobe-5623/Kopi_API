@@ -55,6 +55,14 @@ export async function suspendUser(user: User): Promise<User> {
 }
 
 
-export async function addCustomerAddress(newAddress: string) {
-  const address = await CustomerAddressModel
+export async function addCustomerAddress(id: string, newAddress: string) {
+  return await CustomerAddressModel.create({ 
+    customerId: id,
+    address: newAddress,
+  })
+}
+
+export async function removeCustomerAddress(id: string, addressId: string) {
+  const deleted = await CustomerAddressModel.destroy({ where: { id: addressId, customerId: id } });
+  if (deleted === 0) throw new ApiError(404, 'Customer address not found', 'CUSTOMER_ADDRESS_NOT_FOUND');
 }
