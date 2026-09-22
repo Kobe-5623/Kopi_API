@@ -4,15 +4,20 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
   Sequelize,
 } from 'sequelize'; 
 import { generateID } from '../utils/idGenerator.js';
+import { Product } from './Product.js';
+import { CartItemAddOn } from './CartItemAddOn.js';
 
 export class CartItem extends Model<InferAttributes<CartItem>, InferCreationAttributes<CartItem>> {
   declare id: CreationOptional<string>;
   declare customerId: string;
   declare productId: string;
   declare quantity: number;
+  declare Product?: NonAttribute<Product>;
+  declare CartItemAddOns?: NonAttribute<CartItemAddOn[]>;
 }
 
 export function initCartItem(sequelize: Sequelize): typeof CartItem {

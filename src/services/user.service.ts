@@ -4,7 +4,7 @@ import type { User } from '../models/User.js';
 import type { Customer } from '../models/Customer.js';
 import { StoreBranch as StoreBranchModel, Staff as StaffModel, Customer as CustomerModel, User as UserModel, CustomerAddress as CustomerAddressModel} from '../models/index.js';
 import { ApiError } from '../utils/ApiError.js';
-import type { UpdateUserInput } from '../validators/user.validators.js';
+import type { addCustomerAddressInput, UpdateUserInput } from '../validators/user.validators.js';
 import { UserRole } from '../constants/user.js';
 import { Staff } from '../models/Staff.js';
 
@@ -54,12 +54,11 @@ export async function suspendUser(user: User): Promise<User> {
   return user.save();
 }
 
-
-export async function addCustomerAddress(id: string, newAddress: string) {
+export async function addCustomerAddress(id: string, input: addCustomerAddressInput) {
   return await CustomerAddressModel.create({ 
     customerId: id,
-    address: newAddress,
-  })
+    address: input.newAddress,
+  });
 }
 
 export async function removeCustomerAddress(id: string, addressId: string) {

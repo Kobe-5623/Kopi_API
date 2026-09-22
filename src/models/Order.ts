@@ -18,14 +18,14 @@ import { generateID } from '../utils/idGenerator.js';
 
 export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
   declare id: CreationOptional<string>;
-  declare customerId: string | null;
-  declare customerAddress: string | null;
+  declare customerId: string;
+  declare customerAddressId: CreationOptional<string | null>;
   declare storeBranchId: string;
   declare fulfillmentType: CreationOptional<FulfillmentType>;
   declare paymentMethod: CreationOptional<PaymentMethod>;
   declare paymentReference: string | null;
-  declare notes: string | null;
-  declare deliveryFee: number | null;
+  declare notes: CreationOptional<string | null>;
+  declare deliveryFee: CreationOptional<number | null>;
   declare status: CreationOptional<OrderStatus>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -36,9 +36,9 @@ export function initOrder(sequelize: Sequelize): typeof Order {
     {
       id: { type: DataTypes.STRING(26), primaryKey: true, defaultValue: generateID },
       customerId: { type: DataTypes.STRING(26), allowNull: true, references: { model: 'customers', key: 'user_id' }, field: 'customer_id' },
-      customerAddress: { type: DataTypes.STRING, allowNull: true, field: 'customer_address' },
+      customerAddressId: { type: DataTypes.STRING, allowNull: false, references: { model: 'customer_addresses', key: 'id' }, field: 'customer_address_id' },
       storeBranchId: { type: DataTypes.STRING(26), allowNull: false, references: { model: 'store_branches', key: 'id' }, field: 'store_branch_id' },
-      fulfillmentType: { type: DataTypes.ENUM(...FULFILLMENT_TYPE), allowNull: false, defaultValue: 'walk_in', field: 'fulfillment_type' },
+      fulfillmentType: { type: DataTypes.ENUM(...FULFILLMENT_TYPE), allowNull: false, defaultValue: 'delivery', field: 'fulfillment_type' },
       paymentMethod: { type: DataTypes.ENUM(...PAYMENT_METHOD), allowNull: false, defaultValue: 'cash', field: 'payment_method' },
       paymentReference: { type: DataTypes.STRING(30), allowNull: true, field: 'payment_reference' },
       notes: { type: DataTypes.STRING, allowNull: true },

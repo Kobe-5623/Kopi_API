@@ -38,7 +38,7 @@ export const loginSchema = z.object({
 
 export const updateUserSchema = z.object({
   fullName: fullName.optional(),
-  newAddress: address.optional(),
+
   storeBranchAddress: storeBranchAddress.optional(),
   email: email.optional(),
   phoneNumber: z.string().min(1).optional(),
@@ -51,8 +51,13 @@ export const updateUserSchema = z.object({
   path: ['currentPassword'],
 });
 
+export const addCustomerAddressSchema = z.object({
+  newAddress: address,
+}).strict();
+
 export type RegisterCustomerInput = z.infer<typeof registerCustomerSchema>;
 export type RegisterStaffInput = z.infer<typeof registerStaffSchema>;
 export type RegisterOwnerInput = z.infer<typeof registerOwnerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type addCustomerAddressInput = z.infer<typeof addCustomerAddressSchema>;

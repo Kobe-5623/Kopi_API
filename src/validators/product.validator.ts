@@ -9,7 +9,7 @@ const price = z.coerce.number().finite().nonnegative({ message: 'Price cannot be
 const isHotAvailable = z.enum(['true', 'false']).transform(value => value === 'true');
 const isIcedAvailable = z.enum(['true', 'false']).transform(value => value === 'true');
 const ingredients = z.array(
-  z.object({id: z.string().trim(), quantity: z.number().positive()}));
+  z.object({id: z.string().trim(), quantity: z.coerce.number().int('Quantity must be whole number').positive('Quantity must have a value equal or more than 1'),}));
 // formData.append('sizes', JSON.stringify(['small', 'medium', 'large']));
 
 export const newProductSchema = z.object({
